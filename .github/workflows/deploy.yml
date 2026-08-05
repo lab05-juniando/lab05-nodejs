@@ -8,16 +8,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      
-name: Deploy via SSH
-      uses: appleboy/ssh-action@v1
-      with:
-        host: ${{ secrets.ORACLE_HOST }}
-        username: ${{ secrets.ORACLE_USER }}
-        key: ${{ secrets.ORACLE_SSH_KEY }}
-        script: |
-          cd ~/lab05-nodejs
-          git pull
-          npm install
-          npm run build
-          pm2 restart lab05-nodejs
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ${{ secrets.ORACLE_USER }}
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          script: |
+            cd ~/lab05-nodejs
+            git pull
+            npm install
+            npm run build
+            pm2 restart lab05-nodejs

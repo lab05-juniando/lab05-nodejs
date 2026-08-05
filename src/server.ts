@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello World! NodeJS");
+  res.send("Hello World! NodeJS.");
 });
 
 server.listen(process.env.PORT, () => {
