@@ -213,7 +213,3 @@ pm2 restart lab05-nodejs
 | `ORACLE_SSH_KEY` | Chave privada SSH para autenticação |
 
 ---
-
-## Licença
-
-ISC
