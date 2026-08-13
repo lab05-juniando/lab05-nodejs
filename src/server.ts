@@ -4,6 +4,7 @@ import { createServer } from "http";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import { swaggerDocs } from "./docs/swagger";
+import router from "./routes";
 
 dotenv.config();
 
@@ -13,11 +14,12 @@ const server = createServer(app);
 
 app.use(cors());
 app.use(express.json());
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use("/api", router);
 
 app.get("/docs.json", (_req, res) => {
   res.json(swaggerDocs);
-} )
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World! NodeJS.");
