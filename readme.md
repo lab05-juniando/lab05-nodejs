@@ -125,17 +125,17 @@ Os modelos estão definidos em `prisma/schema.prisma`.
 
 ### `User`
 
-| Campo       | Tipo       | Restrições                               |
-| ----------- | ---------- | ---------------------------------------- |
-| `id`        | `String`   | PK, ObjectId, gerado automaticamente     |
-| `name`      | `String`   | Obrigatório                              |
-| `email`     | `String`   | Obrigatório, único                       |
-| `password`  | `String`   | Obrigatório, armazenado com hash bcrypt  |
-| `role`      | `Role`     | Padrão: `ADMIN`                          |
-| `companyId` | `String`   | FK para `Company`, único                 |
-| `createdAt` | `DateTime` | Preenchido na criação                    |
-| `updatedAt` | `DateTime` | Atualizado automaticamente               |
-| `deletedAt` | `DateTime` | Opcional — usado para exclusão lógica    |
+| Campo       | Tipo       | Restrições                              |
+| ----------- | ---------- | --------------------------------------- |
+| `id`        | `String`   | PK, ObjectId, gerado automaticamente    |
+| `name`      | `String`   | Obrigatório                             |
+| `email`     | `String`   | Obrigatório, único                      |
+| `password`  | `String`   | Obrigatório, armazenado com hash bcrypt |
+| `role`      | `Role`     | Padrão: `ADMIN`                         |
+| `companyId` | `String`   | FK para `Company`, único                |
+| `createdAt` | `DateTime` | Preenchido na criação                   |
+| `updatedAt` | `DateTime` | Atualizado automaticamente              |
+| `deletedAt` | `DateTime` | Opcional — usado para exclusão lógica   |
 
 ### `Company`
 
