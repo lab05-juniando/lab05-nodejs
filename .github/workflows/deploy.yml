@@ -18,5 +18,6 @@ jobs:
             cd ~/lab05-nodejs
             git pull
             npm install
+            npm prisma generate
             npm run build
             pm2 restart lab05-nodejs
