@@ -1,7 +1,7 @@
 import { authUser } from "../../auth/Service/auth.service";
 import { Request, Response } from "express";
 import { authSchemaUser } from "../Schemas/Auth.schema";
-import { AppError } from "../../errors/appError";
+import { AppError } from "../../../errors/appError";
 
 export const AuthController = async (req: Request, res: Response) => {
   try {
@@ -15,6 +15,8 @@ export const AuthController = async (req: Request, res: Response) => {
 
     return res.status(200).json(loginUser);
   } catch (error) {
+    console.log(error);
+
     if (error instanceof AppError) {
       return res.status(error.statusCode).json({ error: error.message });
     }

@@ -1,8 +1,8 @@
-import { prisma } from "../../db/db";
+import { prisma } from "../../../db/db";
 import { hashSync } from "bcrypt";
 import { z } from "zod";
 import { registerSchema } from "../schemas/register.schema";
-import { AppError } from "../../errors/appError";
+import { AppError } from "../../../errors/appError";
 
 type UserData = z.infer<typeof registerSchema>;
 

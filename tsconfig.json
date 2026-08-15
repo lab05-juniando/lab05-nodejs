@@ -31,5 +31,20 @@
   "exclude": [
     "node_modules",
     "dist"
-  ]
+  ],
+  "baseUrl": ".",
+  "paths": {
+    "@/*": [
+      "./src/*"
+    ],
+    "@/components/*": [
+      "./src/components/*"
+    ],
+    "@/docs/*": [
+      "./src/docs/*"
+    ],
+    "@/errors/*": [
+      "./src/errors/*"
+    ]
+  }
 }

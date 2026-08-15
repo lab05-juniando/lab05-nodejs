@@ -1,17 +1,17 @@
-import { prisma } from "../../db/db";
+import { prisma } from "../../../db/db";
 import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
 
-import { AppError } from "../../errors/appError";
+import { AppError } from "../../../errors/appError";
 
 export const authUser = async (email: string, password: string) => {
   const existingUser = await prisma.user.findFirst({
     where: {
       email: email,
-      deletedAt: null,
     },
   });
-  if (!existingUser) {
+
+  if (!existingUser || existingUser.deletedAt !== null) {
     throw new AppError("Usuário não existe", 409);
   }
 
