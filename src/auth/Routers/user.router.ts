@@ -5,4 +5,4 @@ import { authMiddleware } from "../Middleware/auth.middleware";
 export const routerUser = Router();
 
 routerUser.get("/perfil", authMiddleware, UserController.getMe);
-routerUser.put("/update", authMiddleware, UserController.update);
+routerUser.put("/update", authMiddleware, UserController.updateUser);

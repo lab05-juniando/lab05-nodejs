@@ -8,10 +8,9 @@ export const authUser = async (email: string, password: string) => {
   const existingUser = await prisma.user.findFirst({
     where: {
       email: email,
-      deletedAt: null,
     },
   });
-  if (!existingUser) {
+  if (!existingUser || existingUser.deletedAt !== null) {
     throw new AppError("Usuário não existe", 409);
   }
 
@@ -22,7 +21,7 @@ export const authUser = async (email: string, password: string) => {
 
   const token = jwt.sign(
     {
-      id: existingUser.id,
+      userId: existingUser.id,
       role: existingUser.role,
     },
     process.env.JWT_SECRET!,

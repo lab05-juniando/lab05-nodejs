@@ -1,46 +1,64 @@
 import { prisma } from "../../db/db";
 import { AppError } from "../../errors/appError";
-import { userSchema } from "../Schemas/User.schema";
+import { updateUserSchema } from "../Schemas/User.schema";
+import { hashSync } from "bcrypt";
 import { z } from "zod";
 
+type UserData = z.infer<typeof updateUserSchema>;
 
-type UserData = z.infer<typeof userSchema>;
+export const getMe = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      name: true,
+      email: true,
+      role: true,
+      company: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+  if (!user) {
+    throw new AppError("Usuario não encontrado", 404);
+  }
+  return user;
+};
 
-export const getPerfil = async (userId: string) => {
+export const updateUser = async (userId: string, data: UserData) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+  if (!user) {
+    throw new AppError("Usuario não encontrado", 404);
+  }
 
-    const user = await prisma.user.findUnique ({
-        where: {id: userId}
-    })
-    if (!user) {
-        throw new AppError("Usuario não encontrado", 404);
-    }
-    return user;
-}
-
- export const updatePerfil = async (userId: string, data: UserData) => {
- const user = await prisma.user.findUnique({
-        where: {id: userId}
-    })
-    if (!user) {
-        throw new AppError("Usuario não encontrado", 404);
-    }
+  if (data.email) {
     const existingEmail = await prisma.user.findFirst({
-        where: {
-            email: data.email,
-            id: { not: userId }
-
-        } 
+      where: {
+        email: data.email,
+        id: { not: userId },
+      },
+    });
+    if (existingEmail) {
+      throw new AppError("Email já cadastrado", 400);
     }
-)
+  }
 
-    if (!existingEmail){
-        throw new AppError("Email já cadastrado", 400);
-    }
-
-    const updatedUser = await prisma.user.update({
-        where: {id: userId},
-        data: {...data}
-    } 
-)
-    return updatedUser;
- }
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      ...(data.name !== undefined && { name: data.name }),
+      ...(data.email !== undefined && { email: data.email }),
+      ...(data.password !== undefined && { password: hashSync(data.password, 10) }),
+    },
+    select: {
+      name: true,
+      email: true,
+      role: true,
+      updatedAt: true,
+    },
+  });
+  return updatedUser;
+};
