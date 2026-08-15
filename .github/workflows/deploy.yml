@@ -16,8 +16,10 @@ jobs:
           key: ${{ secrets.ORACLE_SSH_KEY }}
           script: |
             cd ~/lab05-nodejs
-            git pull
-            npm install
-            npm prisma generate
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
+            npm ci
+            npx prisma generate
             npm run build
-            pm2 restart lab05-nodejs
+            pm2 restart nodejs
