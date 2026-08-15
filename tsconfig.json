@@ -4,12 +4,8 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "target": "es2023",
-    "lib": [
-      "es2023"
-    ],
-    "types": [
-      "node"
-    ],
+    "lib": ["es2023"],
+    "types": ["node"],
     "esModuleInterop": true,
     "ignoreDeprecations": "6.0",
     "sourceMap": true,
@@ -24,12 +20,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*",
-    "generated/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*", "generated/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
