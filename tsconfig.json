@@ -4,12 +4,8 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "target": "es2023",
-    "lib": [
-      "es2023"
-    ],
-    "types": [
-      "node"
-    ],
+    "lib": ["es2023"],
+    "types": ["node"],
     "esModuleInterop": true,
     "ignoreDeprecations": "6.0",
     "sourceMap": true,
@@ -22,29 +18,17 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/config/*": ["src/config/*"],
+      "@/docs/*": ["docs/*"],
+      "@/errors/*": ["src/errors/*"],
+      "@/modules/*": ["src/modules/*"],
+      "@/routes/*": ["src/routes/*"]
+    }
   },
-  "include": [
-    "src/**/*",
-    "generated/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
-  "baseUrl": ".",
-  "paths": {
-    "@/*": [
-      "./src/*"
-    ],
-    "@/components/*": [
-      "./src/components/*"
-    ],
-    "@/docs/*": [
-      "./src/docs/*"
-    ],
-    "@/errors/*": [
-      "./src/errors/*"
-    ]
-  }
+  "include": ["src/**/*", "generated/**/*", "docs"],
+  "exclude": ["node_modules", "dist"]
 }
