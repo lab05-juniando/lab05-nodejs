@@ -8,7 +8,11 @@ interface TokenPayload {
   exp: number;
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction): Response | void => {
+export const authMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Response | void => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -45,4 +49,3 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
     return next();
   });
 };
-
