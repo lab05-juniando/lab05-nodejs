@@ -15,6 +15,14 @@ export const AuthController = async (req: Request, res: Response) => {
 
     const loginUser = await authUser(validationUser.data.email, validationUser.data.password);
 
+    // Envia o token como cookie HttpOnly
+    res.cookie("token", loginUser.token, {
+      httpOnly: true, // JS do front-end não consegue ler
+      secure: process.env.NODE_ENV === "production", // só HTTPS em produção
+      sameSite: "strict", // proteção extra contra CSRF
+      maxAge: 60 * 60 * 1000, // 1 hora (bate com o expiresIn do seu jwt.sign)
+    });
+
     return res.status(200).json(loginUser);
   } catch (error) {
     console.log(error);
