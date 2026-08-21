@@ -9,8 +9,7 @@ interface TokenPayload {
 }
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction): Response | void => {
-  const token  = req.cookies?.token ;
-
+  const token = req.cookies?.token;
 
   if (!token) {
     return res.status(401).json({ error: "É necessário refazer o login" });
@@ -19,7 +18,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction): Respon
   jwt.verify(token as string, process.env.JWT_SECRET!, (err: unknown, decoded: unknown) => {
     if (err) {
       return res.status(404).json({ error: "Usuário não encontrado" });
-    } 
+    }
 
     const payload = decoded as TokenPayload;
     res.locals.userId = payload.userId;

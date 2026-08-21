@@ -23,7 +23,6 @@ export const register = async (data: UserData) => {
 
     const createdUser = await tx.user.create({
       data: {
-
         name: user.name,
         email: user.email,
         password: hashedPassword,

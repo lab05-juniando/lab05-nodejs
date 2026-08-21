@@ -19,8 +19,6 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(cookieParser());
 app.use("/api", router);
 
-
-
 app.get("/docs.json", (_req, res) => {
   res.json(swaggerDocs);
 });
@@ -32,4 +30,3 @@ app.get("/", (req, res) => {
 server.listen(process.env.PORT, () => {
   console.log(`SERVER RODANDO NA PORTA: ${process.env.PORT} 🚀`);
 });
-

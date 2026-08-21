@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { RouterAuth } from "@/modules/auth/routers/auth.router";
 import { router as RouteRegister } from "@/modules/user/routes/register.route";
-import {routerUser} from "@/modules/auth/routers/user.router"
+import { routerUser } from "@/modules/auth/routers/user.router";
 
 const router = Router();
 
