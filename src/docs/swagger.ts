@@ -13,6 +13,7 @@ export const swaggerDocs = {
     { name: "Auth", description: "Autenticação e emissão de tokens" },
     { name: "Users", description: "Gerenciamento de usuários" },
     { name: "Companies", description: "Gerenciamento de empresas" },
+    { name: "Settings", description: "Preferências do usuário e configuração da empresa" },
   ],
 
   components: {
@@ -110,8 +111,172 @@ export const swaggerDocs = {
         },
         required: ["id", "name", "createdAt", "updatedAt"],
       },
+
+      Settings: {
+        type: "object",
+        properties: {
+          theme: { type: "string", enum: ["LIGHT", "DARK", "SYSTEM"] },
+          language: { type: "string", example: "pt-BR" },
+          currency: { type: "string", example: "BRL" },
+          notifications: { type: "boolean", example: true },
+        },
+        required: ["theme", "language", "currency", "notifications"],
+      },
+
+      SettingsResponse: {
+        type: "object",
+        properties: {
+          user: { $ref: "#/components/schemas/User" },
+          settings: { $ref: "#/components/schemas/Settings" },
+          company: { $ref: "#/components/schemas/Company" },
+        },
+        required: ["user", "settings", "company"],
+      },
+
+      UpdateSettings: {
+        type: "object",
+        properties: {
+          settings: { $ref: "#/components/schemas/Settings" },
+          company: {
+            type: "object",
+            properties: {
+              name: { type: "string", example: "Acme Soluções Ltda" },
+              cnpj: { type: "string", nullable: true, example: "12345678000190" },
+            },
+          },
+        },
+        minProperties: 1,
+      },
+
+      UpdateUserSettings: {
+        type: "object",
+        properties: {
+          theme: { type: "string", enum: ["LIGHT", "DARK", "SYSTEM"] },
+          language: { type: "string", example: "pt-BR" },
+          currency: { type: "string", example: "BRL" },
+          notifications: { type: "boolean", example: true },
+        },
+        minProperties: 1,
+      },
+
+      UpdateOrganizationSettings: {
+        type: "object",
+        properties: {
+          name: { type: "string", example: "Acme Soluções Ltda" },
+          cnpj: { type: "string", nullable: true, example: "12345678000190" },
+        },
+        minProperties: 1,
+      },
     },
   },
 
-  paths: {},
+  paths: {
+    "/api/settings": {
+      get: {
+        tags: ["Settings"],
+        summary: "Consulta a configuração do usuário",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "Configuração atual",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/SettingsResponse" } },
+            },
+          },
+          401: { description: "Não autenticado" },
+        },
+      },
+      patch: {
+        tags: ["Settings"],
+        summary: "Atualiza preferências ou dados da empresa",
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": { schema: { $ref: "#/components/schemas/UpdateSettings" } },
+          },
+        },
+        responses: {
+          200: {
+            description: "Configuração atualizada",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/SettingsResponse" } },
+            },
+          },
+          400: { description: "Dados inválidos" },
+          401: { description: "Não autenticado" },
+          403: { description: "Somente administradores podem alterar a empresa" },
+        },
+      },
+    },
+    "/api/settings/user": {
+      get: {
+        tags: ["Settings"],
+        summary: "Consulta as configurações do usuário",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "Preferências e tema atuais",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Settings" } } },
+          },
+          401: { description: "Não autenticado" },
+        },
+      },
+      patch: {
+        tags: ["Settings"],
+        summary: "Atualiza as configurações do usuário",
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": { schema: { $ref: "#/components/schemas/UpdateUserSettings" } },
+          },
+        },
+        responses: {
+          200: {
+            description: "Configurações atualizadas",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Settings" } } },
+          },
+          400: { description: "Dados inválidos" },
+          401: { description: "Não autenticado" },
+        },
+      },
+    },
+    "/api/settings/organization": {
+      get: {
+        tags: ["Settings"],
+        summary: "Consulta os dados da organização",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "Dados atuais da organização",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Company" } } },
+          },
+          401: { description: "Não autenticado" },
+        },
+      },
+      patch: {
+        tags: ["Settings"],
+        summary: "Atualiza os dados da organização",
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/UpdateOrganizationSettings" },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Dados atualizados",
+            content: { "application/json": { schema: { $ref: "#/components/schemas/Company" } } },
+          },
+          400: { description: "Dados inválidos" },
+          401: { description: "Não autenticado" },
+          403: { description: "Somente administradores podem alterar a organização" },
+        },
+      },
+    },
+  },
 };

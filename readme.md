@@ -106,16 +106,21 @@ diretamente no Postman ou no Insomnia.
 A autenticação está declarada no schema `bearerAuth` (JWT no header
 `Authorization`), disponível pelo botão **Authorize** na interface.
 
-### Rotas atuais
+### Rotas principais
 
-| Método | Rota         | Descrição                     |
-| ------ | ------------ | ----------------------------- |
-| `GET`  | `/`          | Healthcheck                   |
-| `GET`  | `/docs`      | Interface do Swagger UI       |
-| `GET`  | `/docs.json` | Especificação OpenAPI em JSON |
+| Método  | Rota                         | Descrição                                                          |
+| ------- | ---------------------------- | ------------------------------------------------------------------ |
+| `GET`   | `/`                          | Healthcheck                                                        |
+| `GET`   | `/docs`                      | Interface do Swagger UI                                            |
+| `GET`   | `/docs.json`                 | Especificação OpenAPI em JSON                                      |
+| `GET`   | `/api/settings`              | Consulta preferências, tema e empresa (JWT)                        |
+| `PATCH` | `/api/settings`              | Atualiza preferências, tema ou empresa (JWT; empresa apenas ADMIN) |
+| `GET`   | `/api/settings/user`         | Consulta preferências e tema do usuário (JWT)                      |
+| `PATCH` | `/api/settings/user`         | Atualiza preferências e tema do usuário (JWT)                      |
+| `GET`   | `/api/settings/organization` | Consulta dados da organização (JWT)                                |
+| `PATCH` | `/api/settings/organization` | Atualiza dados da organização (JWT; apenas ADMIN)                  |
 
-Os endpoints de autenticação, usuários e empresas ainda não foram
-implementados.
+Consulte o Swagger para o contrato completo dos endpoints.
 
 ---
 
@@ -146,6 +151,24 @@ Os modelos estão definidos em `prisma/schema.prisma`.
 | `cnpj`      | `String`   | Opcional, único quando informado     |
 | `createdAt` | `DateTime` | Preenchido na criação                |
 | `updatedAt` | `DateTime` | Atualizado automaticamente           |
+
+### `UserSettings`
+
+Preferências individuais do usuário, criadas automaticamente na primeira
+consulta de configuração.
+
+| Campo           | Tipo      | Padrão   |
+| --------------- | --------- | -------- |
+| `theme`         | `Theme`   | `SYSTEM` |
+| `language`      | `String`  | `pt-BR`  |
+| `currency`      | `String`  | `BRL`    |
+| `notifications` | `Boolean` | `true`   |
+
+Para aplicar a alteração do schema no MongoDB, execute `npx prisma db push`.
+
+### `Theme` (enum)
+
+`LIGHT` · `DARK` · `SYSTEM`
 
 ### `Role` (enum)
 

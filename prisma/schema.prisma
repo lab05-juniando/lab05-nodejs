@@ -13,6 +13,12 @@ enum Role {
   USER
 }
 
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
 model User {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   name      String
@@ -21,10 +27,23 @@ model User {
   role      Role    @default(ADMIN)
   companyId String  @db.ObjectId
   company   Company @relation(fields: [companyId], references: [id])
+  settings  UserSettings?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+}
+
+model UserSettings {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @unique @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id])
+  theme         Theme    @default(SYSTEM)
+  language      String   @default("pt-BR")
+  currency      String   @default("BRL")
+  notifications Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Company {
