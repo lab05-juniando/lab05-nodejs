@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { router as RouteRegister } from "../modules/user/routes/register.route";
-import { routerAuth } from "../modules/auth/Routers/auth.router";
-import { routerUser } from "../modules/auth/Routers/User.router";
+
+import { RouterAuth } from "@/modules/auth/routers/auth.router";
+import { router as RouteRegister } from "@/modules/user/routes/register.route";
 
 const router = Router();
 
 router.use("/users", RouteRegister);
-router.use("/login", routerAuth);
+router.use("/auth", RouterAuth);
+
 export default router;

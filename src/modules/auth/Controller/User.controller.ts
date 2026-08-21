@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
-import { AppError } from "../../../errors/appError";
-import { getMe as getMeService, updateUser as updateUserService } from "../Service/User.Service";
-import { updateUserSchema } from "../Schemas/UserUpdate.Schema";
+import { AppError } from "@/errors/appError";
+import {
+  getMe as getMeService,
+  updateUser as updateUserService,
+} from "@/modules/auth/service/user.service";
+import { updateUserSchema } from "@/modules/auth/schemas/userUpdate.schema";
 
 export const getMe = async (req: Request, res: Response) => {
   try {

@@ -1,8 +1,10 @@
-import { prisma } from "../../../db/db";
-import { AppError } from "../../../errors/appError";
-import { updateUserSchema } from "../Schemas/UserUpdate.Schema";
 import { hashSync } from "bcrypt";
 import { z } from "zod";
+
+import { prisma } from "@/config/prisma";
+import { updateUserSchema } from "@/modules/auth/schemas/userUpdate.schema";
+
+import { AppError } from "@/errors/appError";
 
 type UserData = z.infer<typeof updateUserSchema>;
 

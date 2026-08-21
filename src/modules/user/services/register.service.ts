@@ -1,31 +1,15 @@
-import { prisma } from "../../../db/db";
+import { prisma } from "@/config/prisma";
 import { hashSync } from "bcrypt";
 import { z } from "zod";
 import { registerSchema } from "../schemas/register.schema";
-import { AppError } from "../../../errors/appError";
+import { ValidationExistingUserCompany } from "@/utils/validation-existing-user-company";
 
 type UserData = z.infer<typeof registerSchema>;
 
-export const createUser = async (data: UserData) => {
+export const register = async (data: UserData) => {
   const { company, user } = data;
 
-  const existingCompany = company.cnpj
-    ? await prisma.company.findFirst({
-        where: {
-          cnpj: company.cnpj,
-        },
-      })
-    : null;
-
-  if (existingCompany) throw new AppError("Empresa já cadastrada", 409);
-
-  const existingUser = await prisma.user.findFirst({
-    where: {
-      email: user.email,
-    },
-  });
-
-  if (existingUser) throw new AppError("E-mail já cadastrado", 409);
+  await ValidationExistingUserCompany(company.cnpj, user.email);
 
   const hashedPassword = hashSync(data.user.password, 10);
 
@@ -33,7 +17,7 @@ export const createUser = async (data: UserData) => {
     const createdCompany = await tx.company.create({
       data: {
         name: company.name,
-        cnpj: company.cnpj ?? null,
+        cnpj: company.cnpj,
       },
     });
 

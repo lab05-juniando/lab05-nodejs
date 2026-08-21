@@ -1,8 +1,9 @@
-import { prisma } from "../../../db/db";
 import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
 
-import { AppError } from "../../../errors/appError";
+import { prisma } from "@/config/prisma";
+
+import { AppError } from "@/errors/appError";
 
 export const authUser = async (email: string, password: string) => {
   const existingUser = await prisma.user.findFirst({
@@ -15,8 +16,9 @@ export const authUser = async (email: string, password: string) => {
     throw new AppError("Usuário não existe", 409);
   }
 
-  const isValue = await compare(password, existingUser.password);
-  if (!isValue) {
+  const hasValue = await compare(password, existingUser.password);
+
+  if (!hasValue) {
     throw new AppError("Email ou Senha invalido", 401);
   }
 
@@ -26,14 +28,12 @@ export const authUser = async (email: string, password: string) => {
       role: existingUser.role,
     },
     process.env.JWT_SECRET!,
-    { expiresIn: "1h" },
+    { expiresIn: "15m" },
   );
 
-  const refreshToken = jwt.sign(
-    { id: existingUser.id },
-    process.env.JWT_REFRESH_SECRET!,
-    { expiresIn: "7d" }
-  );
+  const refreshToken = jwt.sign({ id: existingUser.id }, process.env.JWT_REFRESH_SECRET!, {
+    expiresIn: "7d",
+  });
 
   await prisma.refreshToken.upsert({
     where: {
@@ -76,25 +76,21 @@ export const refreshUserToken = async (refreshToken: string) => {
   const newToken = jwt.sign(
     { id: tokenRecord.user.id, role: tokenRecord.user.role },
     process.env.JWT_SECRET!,
-    { expiresIn: "15m" } 
+    { expiresIn: "15m" },
   );
 
   return { token: newToken };
 };
 
-
 export const logoutUser = async (refreshToken: string) => {
-  
   const tokenRecord = await prisma.refreshToken.findUnique({
     where: { token: refreshToken },
   });
 
- 
   if (!tokenRecord) {
     return;
   }
 
-  
   await prisma.refreshToken.delete({
     where: { token: refreshToken },
   });

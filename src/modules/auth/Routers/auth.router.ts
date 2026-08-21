@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { AuthController , LogoutController, RefreshController} from "../../auth/Controller/Auth.Controller";
+import {
+  AuthController,
+  LogoutController,
+  RefreshController,
+} from "@/modules/auth/controller/auth.controller";
 
-export const routerAuth = Router();
+export const RouterAuth = Router();
 
-routerAuth.post("/", AuthController);
-routerAuth.post("/refresh", RefreshController);
-routerAuth.post("/logout", LogoutController);
+RouterAuth.post("/", AuthController);
+RouterAuth.post("/refresh", RefreshController);
+RouterAuth.post("/logout", LogoutController);
