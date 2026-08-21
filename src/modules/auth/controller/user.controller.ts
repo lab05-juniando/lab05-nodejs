@@ -3,8 +3,8 @@ import { AppError } from "@/errors/appError";
 import {
   getMe as getMeService,
   updateUser as updateUserService,
-} from "@/modules/auth/service/user.service";
-import { updateUserSchema } from "@/modules/auth/schemas/userUpdate.schema";
+} from "@/modules/auth/service/user.Service";
+import { updateUserSchema } from "@/modules/auth/schemas/userUpdate.Schema";
 
 export const getMe = async (req: Request, res: Response) => {
   try {

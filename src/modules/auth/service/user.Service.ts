@@ -2,7 +2,7 @@ import { hashSync } from "bcrypt";
 import { z } from "zod";
 
 import { prisma } from "@/config/prisma";
-import { updateUserSchema } from "@/modules/auth/schemas/userUpdate.schema";
+import { updateUserSchema } from "@/modules/auth/schemas/userUpdate.Schema";
 
 import { AppError } from "@/errors/appError";
 
