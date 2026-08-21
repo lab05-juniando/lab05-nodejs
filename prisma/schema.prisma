@@ -22,6 +22,7 @@ model User {
   companyId String  @db.ObjectId
   company   Company @relation(fields: [companyId], references: [id])
 
+  refreshToken RefreshToken?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -35,4 +36,13 @@ model Company {
   updatedAt DateTime @updatedAt
 
   users User[]
+}
+
+model RefreshToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  token     String   @unique
+  
+ 
+  userId    String   @unique @db.ObjectId 
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
