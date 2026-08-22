@@ -9,7 +9,6 @@ import { updateUserSchema } from "@/modules/auth/schemas/userUpdate.Schema";
 export const getMe = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
-    console.log(userId);
 
     if (!userId) {
       return res.status(401).json({

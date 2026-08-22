@@ -7,6 +7,7 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerDocs } from "@/docs/swagger";
 
 import router from "./routes";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -15,6 +16,7 @@ const server = createServer(app);
 app.use(cors());
 app.use(express.json());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use(cookieParser());
 app.use("/api", router);
 
 app.get("/docs.json", (_req, res) => {

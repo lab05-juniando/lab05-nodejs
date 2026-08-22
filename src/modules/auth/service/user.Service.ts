@@ -23,7 +23,7 @@ export const getMe = async (userId: string) => {
     },
   });
   if (!user) {
-    throw new AppError("Usuario não encontrado", 404);
+    throw new AppError("Usuario não encontrado - 1", 404);
   }
   return user;
 };
