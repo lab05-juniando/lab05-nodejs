@@ -111,68 +111,6 @@ export const swaggerDocs = {
         },
         required: ["id", "name", "createdAt", "updatedAt"],
       },
-
-      Settings: {
-        type: "object",
-        properties: {
-          theme: { type: "string", enum: ["LIGHT", "DARK", "SYSTEM"] },
-          language: { type: "string", example: "pt-BR" },
-          currency: { type: "string", example: "BRL" },
-          notifications: { type: "boolean", example: true },
-        },
-        required: ["theme", "language", "currency", "notifications"],
-      },
-
-      SettingsResponse: {
-        type: "object",
-        properties: {
-          user: { $ref: "#/components/schemas/User" },
-          settings: { $ref: "#/components/schemas/Settings" },
-          company: { $ref: "#/components/schemas/Company" },
-        },
-        required: ["user", "settings", "company"],
-      },
-
-      UpdateSettings: {
-        type: "object",
-        properties: {
-          settings: { $ref: "#/components/schemas/Settings" },
-          company: {
-            type: "object",
-            properties: {
-              name: { type: "string", example: "Acme Soluções Ltda" },
-              cnpj: { type: "string", nullable: true, example: "12345678000190" },
-            },
-          },
-        },
-        minProperties: 1,
-      },
-
-      UpdateUserSettings: {
-        type: "object",
-        properties: {
-          theme: { type: "string", enum: ["LIGHT", "DARK", "SYSTEM"] },
-          language: { type: "string", example: "pt-BR" },
-          currency: { type: "string", example: "BRL" },
-          notifications: { type: "boolean", example: true },
-        },
-        minProperties: 1,
-      },
-
-      UpdateOrganizationSettings: {
-        type: "object",
-        properties: {
-          name: { type: "string", example: "Acme Soluções Ltda" },
-          cnpj: { type: "string", nullable: true, example: "12345678000190" },
-        },
-        minProperties: 1,
-      },
-    },
-  },
-
-  paths: {
-
-        },
       },
     },
   },
