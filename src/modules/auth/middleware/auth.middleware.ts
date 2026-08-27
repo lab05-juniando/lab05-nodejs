@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 interface TokenPayload {
   userId: string;
   role: string;
+  companyId: string;
   iat: number;
   exp: number;
 }
@@ -23,8 +24,10 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction): Respon
     const payload = decoded as TokenPayload;
     res.locals.userId = payload.userId;
     res.locals.role = payload.role;
+    res.locals.companyId = payload.companyId;
     req.userId = payload.userId;
     req.userRole = payload.role;
+    req.userRole = payload.companyId;
 
     return next();
   });
