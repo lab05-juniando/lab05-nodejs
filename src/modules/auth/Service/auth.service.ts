@@ -24,6 +24,7 @@ export const authUser = async (email: string, password: string) => {
     {
       userId: existingUser.id,
       role: existingUser.role,
+      companyId: existingUser.companyId,
     },
     process.env.JWT_SECRET!,
     { expiresIn: "1h" },

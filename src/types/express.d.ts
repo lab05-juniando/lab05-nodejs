@@ -3,6 +3,7 @@ export declare global {
     interface Request {
       userId?: string;
       userRole?: string;
+      companyId?: string;
     }
   }
 }
