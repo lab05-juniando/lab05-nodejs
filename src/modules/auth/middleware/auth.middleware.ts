@@ -27,7 +27,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction): Respon
     res.locals.companyId = payload.companyId;
     req.userId = payload.userId;
     req.userRole = payload.role;
-    req.userRole = payload.companyId;
+    req.companyId = payload.companyId;
 
     return next();
   });
