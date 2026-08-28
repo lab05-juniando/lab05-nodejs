@@ -5,7 +5,7 @@ import { prisma } from "@/config/prisma";
 
 import { AppError } from "@/errors/appError";
 
-export const authUser = async (email: string, password: string) => {
+export const authUser = async (email: string, passwordUser: string) => {
   const existingUser = await prisma.user.findFirst({
     where: {
       email: email,
@@ -16,7 +16,7 @@ export const authUser = async (email: string, password: string) => {
     throw new AppError("Usuário não existe", 409);
   }
 
-  const hasValue = await compare(password, existingUser.password);
+  const hasValue = await compare(passwordUser, existingUser.password);
 
   if (!hasValue) {
     throw new AppError("Email ou Senha invalido", 401);
@@ -49,11 +49,14 @@ export const authUser = async (email: string, password: string) => {
     },
   });
 
+  const { password = undefined, ...user}  = existingUser;
+
   return {
     token,
     refreshToken,
     user: {
-      email: existingUser.email,
+      ...user
+
     },
   };
 };
