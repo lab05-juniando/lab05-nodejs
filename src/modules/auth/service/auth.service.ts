@@ -1,9 +1,20 @@
 import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
+import crypto from "crypto";
+import bcrypt from "bcrypt";
+import {Resend} from "resend"
 
 import { prisma } from "@/config/prisma";
 
 import { AppError } from "@/errors/appError";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const RESET_TOKEN_EXPIRATION_MS = 30 * 60 * 1000; // 30 minutos
+
+function hashToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
 
 export const authUser = async (email: string, passwordUser: string) => {
   const existingUser = await prisma.user.findFirst({
@@ -48,14 +59,13 @@ export const authUser = async (email: string, passwordUser: string) => {
     },
   });
 
-  const { password = undefined, ...user}  = existingUser;
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password: _password, ...user } = existingUser;
   return {
     token,
     refreshToken,
     user: {
-      ...user
-
+      ...user,
     },
   };
 };
@@ -98,3 +108,64 @@ export const logoutUser = async (refreshToken: string) => {
     where: { token: refreshToken },
   });
 };
+
+export const requestPasswordReset = async (email: string) => {
+
+  const user = await prisma.user.findFirst({
+    where: {
+      email: email,
+      deletedAt: null,
+    },
+  });
+
+  if(!user){
+    return null;
+  }
+
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = hashToken(rawToken);
+
+
+   await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: new Date(Date.now() + RESET_TOKEN_EXPIRATION_MS),
+    },
+  });
+
+  const { data, error } = await resend.emails.send({
+    from: 'onboarding@resend.dev', // ajuste pro domínio verificado no Resend
+    to: user.email,
+    subject: "Redefinição de senha",
+    html: "<strong>it works!</strong>",
+  });
+
+  console.log("📧 Resend data:", data);
+  console.log("❌ Resend error:", error);
+};
+
+export const resetPassword = async (token: string, newPassword: string) => {
+  const hashedToken = hashToken(token);
+
+  const user = await prisma.user.findFirst({
+    where: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { gt: new Date() },
+    },
+  });
+  if (!user) {
+    throw new Error("INVALID_OR_EXPIRED_TOKEN");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  await prisma.user.update({
+    where:{id: user.id},
+    data:{
+      password: hashedPassword,
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
+    }
+  })
+}
