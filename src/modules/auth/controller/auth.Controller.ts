@@ -1,7 +1,14 @@
 import { Request, Response } from "express";
 
-import { authUser, logoutUser, refreshUserToken } from "@/modules/auth/service/auth.service";
+import {
+  authUser,
+  logoutUser,
+  refreshUserToken,
+  requestPasswordReset,
+  resetPassword,
+} from "@/modules/auth/service/auth.service";
 import { authSchemaUser } from "@/modules/auth/schemas/auth.schema";
+import { forgotPasswordSchema, resetPasswordSchema } from "@/modules/auth/schemas/authReset.schema";
 
 import { AppError } from "@/errors/appError";
 
@@ -75,3 +82,39 @@ export const LogoutController = async (req: Request, res: Response) => {
     return res.status(500).json("Erro interno no servidor");
   }
 };
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const parsed = forgotPasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ message: parsed.error.message });
+  }
+  try {
+    await requestPasswordReset(parsed.data.email);
+    return res.status(200).json({
+      message: "Se o email existir, um link de redefinição foi enviado.",
+    });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+    return res.status(500).json("Erro interno no servidor");
+  }
+};
+
+export async function resetingPassword(req: Request, res: Response) {
+  const parsed = resetPasswordSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.flatten().fieldErrors });
+  }
+
+  try {
+    await resetPassword(parsed.data.token, parsed.data.newPassword);
+    return res.status(200).json({ message: "Senha redefinida com sucesso." });
+  } catch (error) {
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+    return res.status(500).json("Erro interno no servidor");
+  }
+}
