@@ -89,7 +89,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     return res.status(400).json({ message: parsed.error.message });
   }
   try {
-   await requestPasswordReset(parsed.data.email);
+    await requestPasswordReset(parsed.data.email);
     return res.status(200).json({
       message: "Se o email existir, um link de redefinição foi enviado.",
     });
@@ -116,6 +116,5 @@ export async function resetingPassword(req: Request, res: Response) {
       return res.status(error.statusCode).json({ error: error.message });
     }
     return res.status(500).json("Erro interno no servidor");
-
   }
 }

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import {Resend} from "resend"
+import { Resend } from "resend";
 
 import { prisma } from "@/config/prisma";
 
@@ -14,7 +14,6 @@ const RESET_TOKEN_EXPIRATION_MS = 30 * 60 * 1000; // 30 minutos
 function hashToken(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
-
 
 export const authUser = async (email: string, passwordUser: string) => {
   const existingUser = await prisma.user.findFirst({
@@ -110,7 +109,6 @@ export const logoutUser = async (refreshToken: string) => {
 };
 
 export const requestPasswordReset = async (email: string) => {
-
   const user = await prisma.user.findFirst({
     where: {
       email: email,
@@ -118,15 +116,14 @@ export const requestPasswordReset = async (email: string) => {
     },
   });
 
-  if(!user){
+  if (!user) {
     return null;
   }
 
   const rawToken = crypto.randomBytes(32).toString("hex");
   const hashedToken = hashToken(rawToken);
 
-
-   await prisma.user.update({
+  await prisma.user.update({
     where: { id: user.id },
     data: {
       resetPasswordToken: hashedToken,
@@ -135,7 +132,7 @@ export const requestPasswordReset = async (email: string) => {
   });
 
   const { data, error } = await resend.emails.send({
-    from: 'onboarding@resend.dev', // ajuste pro domínio verificado no Resend
+    from: "onboarding@resend.dev", // ajuste pro domínio verificado no Resend
     to: user.email,
     subject: "Redefinição de senha",
     html: "<strong>it works!</strong>",
@@ -161,11 +158,11 @@ export const resetPassword = async (token: string, newPassword: string) => {
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   await prisma.user.update({
-    where:{id: user.id},
-    data:{
+    where: { id: user.id },
+    data: {
       password: hashedPassword,
       resetPasswordToken: null,
       resetPasswordExpires: null,
-    }
-  })
-}
+    },
+  });
+};
